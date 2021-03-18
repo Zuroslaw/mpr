@@ -9,24 +9,25 @@ void pingpong(long round_trips, long data_size) {
     int my_rank;
     MPI_Comm_rank(MPI_COMM_WORLD, &my_rank);
 
-    int* data = (int*) malloc(1024*1024*1024 * sizeof(int));
+    int* data_send = (int*) malloc(1024*1024*1024 * sizeof(int));
+    int* data_receive = (int*) malloc(1024*1024*1024 * sizeof(int));
     double* times = (double*) malloc(round_trips * sizeof(double));
 
     if (my_rank == 0) {
         for (int i = 0; i < round_trips; ++i) {
             double start = MPI_Wtime();
-            MPI_Send(data, data_size, MPI_INT, 1, 0,
+            MPI_Send(data_send, data_size, MPI_INT, 1, 0,
                      MPI_COMM_WORLD);
-            MPI_Recv(data, data_size, MPI_INT, 1, 0,
+            MPI_Recv(data_receive, data_size, MPI_INT, 1, 0,
                      MPI_COMM_WORLD, MPI_STATUS_IGNORE);
             double end = MPI_Wtime();
             times[i] = end - start;
         }
     } else {
         for (int i = 0; i < round_trips; ++i) {
-            MPI_Recv(data, data_size, MPI_INT, 0, 0,
+            MPI_Recv(data_receive, data_size, MPI_INT, 0, 0,
                      MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-            MPI_Send(data, data_size, MPI_INT, 0, 0,
+            MPI_Send(data_send, data_size, MPI_INT, 0, 0,
                      MPI_COMM_WORLD);
         }
     }
