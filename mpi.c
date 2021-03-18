@@ -48,12 +48,13 @@ void pingpong(long round_trips, long data_size) {
 
 int main(int argc, char * argv[]) {
     long round_trips = atol(argv[1]);
+    long iter = atol(argv[2]);
 
     MPI_Init(NULL, NULL);
 
     pingpong(round_trips, 1);
 
-    for (int i = 1; i <= 10; ++i) {
+    for (int i = 1; i <= iter; ++i) {
         long data_size = i*1024;
         pingpong(round_trips, data_size);
     }
