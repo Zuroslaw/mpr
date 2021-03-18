@@ -4,7 +4,6 @@
 
 void pingpong(long round_trips, long data_size) {
 
-    MPI_Init(NULL, NULL);
 
     int my_rank;
     MPI_Comm_rank(MPI_COMM_WORLD, &my_rank);
@@ -38,19 +37,29 @@ void pingpong(long round_trips, long data_size) {
             sum += times[i];
         }
         double average = sum/(double)round_trips;
-        printf("Round trips: %ld\n", round_trips);
-        printf("Element size: %zu bytes\n", sizeof(int));
-        printf("Data size: %ld elements\n", data_size);
-        printf("Average round trip time: %.10e\n", average);
+        printf("%ld: %.10e\n", data_size*sizeof(int), average);
     }
 
-    MPI_Finalize();
+    free(data_send);
+    free(data_receive);
+    free(times);
 
 }
 
 int main(int argc, char * argv[]) {
     long round_trips = atol(argv[1]);
-    long data_size = atol(argv[2]);
-    pingpong(round_trips, data_size);
+
+    MPI_Init(NULL, NULL);
+
+    pingpong(round_trips, 1);
+
+    for (int i = 1; i <= 10; ++i) {
+        long data_size = i*1024;
+        pingpong(round_trips, data_size);
+    }
+
+    MPI_Finalize();
+
+    return 0;
 }
 
