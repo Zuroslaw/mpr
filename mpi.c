@@ -9,8 +9,8 @@ void pingpong(long round_trips, long data_size) {
     int my_rank;
     MPI_Comm_rank(MPI_COMM_WORLD, &my_rank);
 
-    int* data_send = (int*) malloc(1024*1024*1024 * sizeof(int));
-    int* data_receive = (int*) malloc(1024*1024*1024 * sizeof(int));
+    int* data_send = (int*) malloc(data_size * sizeof(int));
+    int* data_receive = (int*) malloc(data_size * sizeof(int));
     double* times = (double*) malloc(round_trips * sizeof(double));
 
     if (my_rank == 0) {
