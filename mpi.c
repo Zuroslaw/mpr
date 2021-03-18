@@ -9,8 +9,8 @@ void pingpong(long round_trips, long data_size) {
     int my_rank;
     MPI_Comm_rank(MPI_COMM_WORLD, &my_rank);
 
-    int* data = malloc(data_size * sizeof(int));
-    double* times = malloc(round_trips * sizeof(double));
+    int* data = (int*) malloc(1024*1024*1024 * sizeof(int));
+    double* times = (double*) malloc(round_trips * sizeof(double));
 
     if (my_rank == 0) {
         for (int i = 0; i < round_trips; ++i) {
@@ -38,8 +38,8 @@ void pingpong(long round_trips, long data_size) {
         }
         double average = sum/(double)round_trips;
         printf("Round trips: %ld\n", round_trips);
-        printf("Data size: %ld elements\n", data_size);
         printf("Element size: %d bytes\n", sizeof(int));
+        printf("Data size: %ld elements\n", data_size);
         printf("Average round trip time: %.10e\n", average);
     }
 
